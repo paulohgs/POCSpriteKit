@@ -14,13 +14,15 @@ struct ContentView: View {
             NavigationLink(destination: GameView()) {
                 Text("Iniciar Jogo")
             }
-            .navigationTitle("Game")
         }
+            .navigationViewStyle(.stack)
+            .ignoresSafeArea()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .previewInterfaceOrientation(.landscapeRight)
     }
 }

@@ -7,51 +7,33 @@
 import SpriteKit
 import SwiftUI
 
-class GameScene: SKScene {
-    override func didMove(to view: SKView) {
-        physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
-        let box = SKSpriteNode(color: .black, size: CGSize(width: 50, height: 50))
-        box.position = location
-        box.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
-        addChild(box)
-    }
-}
-
 struct GameView: View {
     @Environment(\.dismiss) private var dismiss
     @State var dismissView: Bool = false
 
     var scene: SKScene {
-        let scene = GameScene()
-        scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        scene.scaleMode = .fill
+        guard let scene = PongScene(fileNamed: "PongScene") else {
+            preconditionFailure("File scene doesn't exists.")
+        }
+        scene.size = .zero
+        scene.scaleMode = .resizeFill
         return scene
     }
 
     var body: some View {
-        SpriteView(scene: scene)
-            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-            .ignoresSafeArea()
-        Button {
-            dismissView.toggle()
-        } label: {
-            Text("back to menu")
-        }
+        SpriteView(scene: scene, debugOptions: [.showsFPS, .showsNodeCount])
         .navigationBarBackButtonHidden()
         .onChange(of: dismissView,
                   perform: ({ newValue in
             dismiss()
         }))
+        .ignoresSafeArea()
     }
 }
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
         GameView()
+            .previewInterfaceOrientation(.landscapeRight)
     }
 }
